@@ -6,5 +6,6 @@ A list of subdirectories that might be present (each one is used to develop and 
 - service-status/ - github repo with a web interface displaying what's released where
 
 Rules:
+- Unless specified otherwise always focus answers and changes on the ARO HCP parts, even for repos that contain things not related to ARO HCP
 - when referencing github commits, always print a cliackable URL for that commits
 - to fetch latest version of all repos, run ./update.sh

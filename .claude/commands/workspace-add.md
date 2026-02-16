@@ -16,6 +16,7 @@ Parse `$ARGUMENTS` by splitting on whitespace. The first token is the workspace 
 
 1. **Validate** each requested repo directory exists under `/home/mmazur/aro/` and is a git repo (has a `.git` directory or file).
 2. **Create** the workspace directory: `mkdir -p /home/mmazur/aro/work/<workspace>`
+3. **Copy** CLAUDE.md to the new workspace directory at '/home/mmazur/aro/work/<workspace>'
 3. **For each repo**, create a git worktree:
    ```
    git -C /home/mmazur/aro/<repo> worktree add /home/mmazur/aro/work/<workspace>/<repo> -b mmazur/<workspace> main

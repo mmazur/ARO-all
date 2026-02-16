@@ -1,1 +1,9 @@
-*
+ARO-HCP/
+ARO-Tools/
+Tools/
+ci-docs/
+ci-tools/
+prow/
+release/
+sdp-pipelines
+work

@@ -9,7 +9,7 @@ Arguments:
     workspace: the workspace name (e.g. my-feature). Used as both the directory
                name under work/ and the branch suffix (mmazur/<workspace>).
     repos:     space-separated list of repo directory names (e.g. ARO-HCP release).
-               Defaults to: ARO-HCP ARO-Tools release
+               Defaults to all git repos found in the base directory.
 """
 
 import sys
@@ -20,8 +20,30 @@ from pathlib import Path
 
 BASE_DIR = Path("/home/mmazur/aro")
 WORK_DIR = BASE_DIR / "work"
-DEFAULT_REPOS = ["ARO-HCP", "ARO-Tools", "release"]
 CLAUDE_MD = BASE_DIR / "CLAUDE.md"
+SETTINGS_JSON = BASE_DIR / ".claude" / "settings.json"
+
+
+def discover_repos(base_dir: Path, work_dir: Path) -> list[str]:
+    """Find all git repo subdirectories in base_dir, excluding work_dir."""
+    repos = []
+    for entry in sorted(base_dir.iterdir()):
+        if entry.name.startswith('.'):
+            continue
+        if entry == work_dir:
+            continue
+        if entry.is_dir() and (entry / ".git").exists():
+            repos.append(entry.name)
+    return repos
+
+
+def copy_settings(dest_dir: Path):
+    """Copy .claude/settings.json to dest_dir/.claude/settings.json if it exists."""
+    if SETTINGS_JSON.exists():
+        dest = dest_dir / ".claude"
+        dest.mkdir(exist_ok=True)
+        shutil.copy2(SETTINGS_JSON, dest / "settings.json")
+        print(f"Copying settings.json to {dest}/")
 
 
 def validate_repo(repo_path: Path) -> bool:
@@ -59,6 +81,7 @@ def create_workspace(workspace: str, repos: list[str]) -> int:
     workspace_dir.mkdir(parents=True, exist_ok=True)
 
     # Copy CLAUDE.md if it exists
+    copy_settings(workspace_dir)
     if CLAUDE_MD.exists():
         dest_claude_md = workspace_dir / "CLAUDE.md"
         print(f"Copying {CLAUDE_MD} to {dest_claude_md}")
@@ -91,6 +114,7 @@ def create_workspace(workspace: str, repos: list[str]) -> int:
             )
 
             print(f"✓ {repo}: worktree created at {worktree_path}")
+            copy_settings(worktree_path)
 
         except subprocess.CalledProcessError as e:
             error_msg = f"✗ {repo}: failed to create worktree"
@@ -117,7 +141,7 @@ def main():
         return 1
 
     workspace = sys.argv[1]
-    repos = sys.argv[2:] if len(sys.argv) > 2 else DEFAULT_REPOS
+    repos = sys.argv[2:] if len(sys.argv) > 2 else discover_repos(BASE_DIR, WORK_DIR)
 
     return create_workspace(workspace, repos)
 

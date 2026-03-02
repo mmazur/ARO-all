@@ -1,9 +1,11 @@
 ARO-HCP/
 ARO-Tools/
-Tools/
+aro-hcp-clusters-service
 ci-docs/
 ci-tools/
 prow/
 release/
-sdp-pipelines
+sdp-pipelines/
 work
+hcp
+tools

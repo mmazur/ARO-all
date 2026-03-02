@@ -32,7 +32,7 @@ def discover_repos(base_dir: Path, work_dir: Path) -> list[str]:
             continue
         if entry == work_dir:
             continue
-        if entry.is_dir() and (entry / ".git").exists():
+        if not entry.is_symlink() and entry.is_dir() and (entry / ".git").exists():
             repos.append(entry.name)
     return repos
 
@@ -52,6 +52,31 @@ def validate_repo(repo_path: Path) -> bool:
         return False
     git_dir = repo_path / ".git"
     return git_dir.exists()
+
+
+def get_default_branch(repo_path: Path) -> str:
+    """Detect the default branch for a repo by checking remote HEAD refs."""
+    for remote in ("upstream", "origin"):
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(repo_path), "symbolic-ref", f"refs/remotes/{remote}/HEAD"],
+                capture_output=True, text=True, check=True,
+            )
+            return result.stdout.strip().split("/")[-1]
+        except subprocess.CalledProcessError:
+            continue
+    return "main"
+
+
+def discover_symlinks(base_dir: Path, repos: list[str]) -> dict[str, str]:
+    """Find symlinks in base_dir that point to one of the repo dirs."""
+    symlinks = {}
+    for entry in base_dir.iterdir():
+        if entry.is_symlink():
+            target = entry.resolve().name
+            if target in repos and entry.name not in repos:
+                symlinks[entry.name] = target
+    return symlinks
 
 
 def create_workspace(workspace: str, repos: list[str]) -> int:
@@ -97,13 +122,13 @@ def create_workspace(workspace: str, repos: list[str]) -> int:
         branch_name = f"mmazur/{workspace}"
 
         try:
-            # git -C <repo> worktree add <worktree_path> -b <branch> main
+            base_branch = get_default_branch(repo_path)
             cmd = [
                 "git", "-C", str(repo_path),
                 "worktree", "add",
                 str(worktree_path),
                 "-b", branch_name,
-                "main"
+                base_branch
             ]
 
             result = subprocess.run(
@@ -113,7 +138,7 @@ def create_workspace(workspace: str, repos: list[str]) -> int:
                 check=True
             )
 
-            print(f"✓ {repo}: worktree created at {worktree_path}")
+            print(f"✓ {repo}: worktree created at {worktree_path} (from {base_branch})")
             copy_settings(worktree_path)
 
         except subprocess.CalledProcessError as e:
@@ -122,6 +147,13 @@ def create_workspace(workspace: str, repos: list[str]) -> int:
                 error_msg += f"\n  {e.stderr.strip()}"
             errors.append(error_msg)
             print(error_msg, file=sys.stderr)
+
+    # Recreate symlinks from base directory
+    symlinks = discover_symlinks(BASE_DIR, repos)
+    for link_name, target_repo in symlinks.items():
+        link_path = workspace_dir / link_name
+        link_path.symlink_to(target_repo)
+        print(f"✓ {link_name} -> {target_repo} (symlink)")
 
     # Summary
     print(f"\n{'='*60}")

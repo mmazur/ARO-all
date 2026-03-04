@@ -13,4 +13,7 @@ Rules:
 - when referencing github commits, always print a cliackable URL for that commits
 - to fetch latest version of all repos, run ./update.sh; must be outside of sandbox
 
-Preferred cli tools: gh
+Tools:
+- use `gh` for github interactions
+- sdp-pipelines/ is ADO so `az devops`
+- when running git against repos use 'git -C repo/ $command'

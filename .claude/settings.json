@@ -29,10 +29,22 @@
       "Bash(gh search commits:*)",
       "Bash(gh label list:*)",
       "Bash(gh --help:*)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(git status *)",
+      "Bash(git branch *)",
+      "Bash(git -C * log *)",
+      "Bash(git -C * diff *)",
+      "Bash(git -C * show *)",
+      "Bash(git -C * status *)",
+      "Bash(git -C * branch *)",
+      "WebFetch(domain:api.github.com)",
       "WebFetch(domain:docs.ci.openshift.org)",
       "WebFetch(domain:docs.prow.k8s.io)",
       "WebFetch(domain:prow.ci.openshift.org)",
-      "WebFetch(domain:gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com)"
+      "WebFetch(domain:gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com)",
+      "WebFetch(domain:storage.googleapis.com)"
     ]
   }
 }

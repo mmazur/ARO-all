@@ -1,0 +1,7 @@
+default_repos = ["group:base"]
+
+[groups]
+base = ["ARO-HCP", "ARO-Tools", "release", "sdp-pipelines"]
+ci = ["release", "ci-docs", "ci-tools", "prow"]
+components = ["hypershift", "aro-hcp-clusters-service"]
+

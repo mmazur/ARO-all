@@ -19,3 +19,6 @@ tools
 
 # For debugging sessions:
 must-gather*
+
+# rws
+.rws/*.local.toml

@@ -1,11 +1,21 @@
+# Primary repos
 ARO-HCP/
 ARO-Tools/
-aro-hcp-clusters-service
+release/
+sdp-pipelines/
+
+# Upstream components
+aro-hcp-clusters-service/
+hypershift/
+
+# Prow/Openshift CI
 ci-docs/
 ci-tools/
 prow/
-release/
-sdp-pipelines/
-work
+
+# symlinks for easier nav
 hcp
 tools
+
+# For debugging sessions:
+must-gather*

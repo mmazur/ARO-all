@@ -9,7 +9,7 @@
 - sdp-pipelines/ is ADO so `az devops`
 - when running git against repos use 'git -C repo/ $command' for permissions reasons
 
-## Plan Mode Additions
+## Plan Mode Additions for ARO-HCP repo only
 
 When creating a plan with the user always add this modification to the plan:
 1. First step of the plan should always be to write down the FULL, unabridged

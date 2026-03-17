@@ -44,7 +44,9 @@
       "WebFetch(domain:docs.prow.k8s.io)",
       "WebFetch(domain:prow.ci.openshift.org)",
       "WebFetch(domain:gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com)",
-      "WebFetch(domain:storage.googleapis.com)"
+      "WebFetch(domain:storage.googleapis.com)",
+      "WebFetch(domain:proxy.golang.org)",
+      "WebFetch(domain:sum.golang.org)"
     ]
   }
 }
